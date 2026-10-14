@@ -32,10 +32,10 @@ Karena kebijakan browser, musik baru diputar setelah ada interaksi pertama (klik
 
 > Pastikan kamu punya hak untuk menggunakan lagu tersebut.
 
-## 🖼️ Mengganti foto galeri
+## 🖼️ Foto galeri
 
-Ganti file `assets/photos/photo1.svg` … `photo6.svg` dengan foto kalian (boleh `.jpg`/`.png`).
-Jika memakai ekstensi berbeda, sesuaikan juga `src` di `index.html` pada bagian galeri.
+Galeri memakai 6 foto di `assets/photos/foto1.jpeg` … `foto6.jpeg`.
+Ganti file-file itu (nama sama) untuk mengubah foto, atau sesuaikan `src` di `index.html` pada bagian galeri.
 
 ## ✍️ Personalisasi teks
 

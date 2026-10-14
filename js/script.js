@@ -95,7 +95,7 @@
 
   /* ---------- 2. FLOATING HEARTS ---------- */
   const heartsLayer = document.getElementById("heartsLayer");
-  const heartChars = ["♥", "❤", "💗", "✦", "★"];
+  const heartChars = ["✦", "★", "✧", "⋆", "✩"];
 
   function spawnHeart() {
     if (reduceMotion) return;

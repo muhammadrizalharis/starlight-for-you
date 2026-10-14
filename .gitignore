@@ -1,0 +1,9 @@
+# Jangan publish ekspor chat / data privat
+*.zip
+*.vcf
+assets/Chat*
+assets/*.zip
+
+# File sistem
+.DS_Store
+Thumbs.db
