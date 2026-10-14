@@ -397,3 +397,26 @@ main { position: relative; z-index: 2; }
   .reveal { transition: none; opacity: 1; transform: none; }
   .heart, .akhir-heart, .scroll-cue .arrow, .music-toggle.playing .music-icon { animation: none; }
 }
+
+/* ===== 3D depth & tilt ===== */
+.gallery-grid,
+.reasons-grid,
+.timeline-track,
+.surat .container { perspective: 1100px; }
+
+.letter,
+.tl-card,
+.reason-card,
+.gallery-item {
+  transform-style: preserve-3d;
+  will-change: transform;
+  transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.4s ease, border-color 0.4s ease;
+}
+
+.gallery-item img,
+.reason-num,
+.tl-card h3,
+.letter-greeting { transform: translateZ(26px); }
+
+.section-title,
+.hero-title .name { will-change: transform; }

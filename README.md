@@ -4,13 +4,13 @@ Sebuah web romantis penuh animasi bertema **bintang & galaxy**, dibuat dengan HT
 
 ## 🌌 Fitur
 
-- **Hero** dengan latar bintang berkelap-kelip (starfield) & bintang jatuh.
+- **Hero** dengan **galaksi 3D** (Three.js): ribuan partikel spiral berputar, inti bercahaya, parallax mengikuti gerak mouse & scroll.
 - **Surat cinta** dengan desain kartu elegan.
 - **Timeline** perjalanan hubungan.
 - **Galeri** kenangan (tinggal ganti foto).
 - **Alasan menyayangi** dalam bentuk kartu.
 - **Musik latar** yang bisa dinyalakan/dimatikan.
-- Animasi **hati melayang**, efek **reveal saat scroll**, dan **navigasi titik** di samping.
+- Efek **tilt 3D** pada kartu & foto (mengikuti kursor), **elemen mengambang** berkedalaman, animasi **bintang melayang**, **reveal saat scroll**, dan **navigasi titik**.
 - Responsif (HP & desktop) serta menghormati `prefers-reduced-motion`.
 
 ## 📁 Struktur
