@@ -573,12 +573,50 @@
   var music = $("#bgMusic");
   var musicBtn = $("#musicToggle");
   if (musicBtn && music) {
+    music.volume = 0.0;
     var playing = false;
-    musicBtn.addEventListener("click", function () {
-      if (playing) { music.pause(); musicBtn.classList.remove("playing"); }
-      else { music.play().catch(function () {}); musicBtn.classList.add("playing"); }
-      playing = !playing;
+    var started = false;
+
+    function fadeTo(target, done) {
+      var step = target > music.volume ? 0.04 : -0.04;
+      var iv = setInterval(function () {
+        music.volume = Math.min(1, Math.max(0, music.volume + step));
+        if ((step > 0 && music.volume >= target) || (step < 0 && music.volume <= target)) {
+          music.volume = target; clearInterval(iv); if (done) done();
+        }
+      }, 40);
+    }
+
+    function startMusic() {
+      if (playing) return;
+      music.play().then(function () {
+        playing = true; musicBtn.classList.add("playing");
+        fadeTo(0.55);
+      }).catch(function () {});
+    }
+    function stopMusic() {
+      if (!playing) return;
+      fadeTo(0.0, function () { music.pause(); });
+      playing = false; musicBtn.classList.remove("playing");
+    }
+
+    musicBtn.addEventListener("click", function (e) {
+      e.stopPropagation();
+      if (playing) stopMusic(); else startMusic();
     });
+
+    // Autoplay saat interaksi pertama (browser blokir autoplay bersuara tanpa gesture)
+    function autoStartOnce() {
+      if (started) return;
+      started = true;
+      startMusic();
+      window.removeEventListener("pointerdown", autoStartOnce);
+      window.removeEventListener("keydown", autoStartOnce);
+      window.removeEventListener("scroll", autoStartOnce);
+    }
+    window.addEventListener("pointerdown", autoStartOnce, { passive: true });
+    window.addEventListener("keydown", autoStartOnce);
+    window.addEventListener("scroll", autoStartOnce, { passive: true });
   }
 
   /* =============================================================
