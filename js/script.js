@@ -396,64 +396,66 @@
     var small = window.innerWidth < 640;
     var radius = small ? 230 : 330;
     var current = 0;
-    var autoTimer = null;
+    var stepDeg = 360 / n;
 
     function layout() {
       items.forEach(function (it, i) {
-        var a = (360 / n) * i;
+        var a = stepDeg * i;
         it.style.transform = "rotateY(" + a + "deg) translateZ(" + radius + "px)";
       });
     }
-    function spin(angle) {
-      stage.style.transform = "translateZ(-" + radius + "px) rotateY(" + angle + "deg)";
-    }
-    function goTo(idx) {
-      current = idx;
-      spin(-(360 / n) * idx);
-    }
     layout();
-    goTo(0);
 
-    function next() { goTo(current + 1); }
-    function prev() { goTo(current - 1); }
+    var angleDeg = 0;      // rotasi stage saat ini (derajat)
+    var autoSpeed = 7;     // deg/detik — pelan, halus, elegan
+    var vel = 0;           // dorongan tambahan (tombol/lempar), meluruh mulus
+    var dragging = false, startX = 0, moved = 0, baseAngle = 0;
+    var lastMoveX = 0, lastMoveT = 0, flingVel = 0;
+    var lastT = 0;
+
+    function render() {
+      stage.style.transform = "translateZ(-" + radius + "px) rotateY(" + angleDeg + "deg)";
+    }
+    render();
+
+    function frame(t) {
+      if (!lastT) lastT = t;
+      var dt = Math.min((t - lastT) / 1000, 0.05);
+      lastT = t;
+      if (!document.hidden && !dragging) {
+        angleDeg += (-autoSpeed + vel) * dt;      // selalu berputar, tanpa jeda
+        vel *= Math.pow(0.9, dt * 60);            // peluruhan dorongan mulus
+        if (Math.abs(vel) < 0.02) vel = 0;
+      }
+      render();
+      requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
 
     var pn = $("#cNext"), pp = $("#cPrev");
-    if (pn) pn.addEventListener("click", function () { next(); restartAuto(); });
-    if (pp) pp.addEventListener("click", function () { prev(); restartAuto(); });
+    if (pn) pn.addEventListener("click", function () { vel -= 150; });
+    if (pp) pp.addEventListener("click", function () { vel += 150; });
 
-    function startAuto() {
-      if (TIER === 0) return;
-      autoTimer = setInterval(function () { if (!document.hidden) next(); }, 3800);
-    }
-    function restartAuto() { if (autoTimer) clearInterval(autoTimer); startAuto(); }
-    startAuto();
-
-    var carouselEl = $("#carousel");
-    if (carouselEl) {
-      carouselEl.addEventListener("mouseenter", function () { if (autoTimer) clearInterval(autoTimer); });
-      carouselEl.addEventListener("mouseleave", startAuto);
-    }
-
-    // drag / swipe
-    var dragging = false, startX = 0, moved = 0, baseAngle = 0;
-    function curAngle() { return -(360 / n) * current; }
+    // seret / lempar (drag & fling)
     stage.addEventListener("pointerdown", function (e) {
-      dragging = true; moved = 0; startX = e.clientX; baseAngle = curAngle();
+      dragging = true; moved = 0; startX = e.clientX; baseAngle = angleDeg;
+      lastMoveX = e.clientX; lastMoveT = performance.now(); flingVel = 0;
       stage.classList.add("dragging");
-      if (autoTimer) clearInterval(autoTimer);
     });
     window.addEventListener("pointermove", function (e) {
       if (!dragging) return;
       moved = e.clientX - startX;
-      spin(baseAngle + moved * 0.35);
+      angleDeg = baseAngle + moved * 0.3;
+      var now = performance.now();
+      var dtm = now - lastMoveT;
+      if (dtm > 0) flingVel = ((e.clientX - lastMoveX) * 0.3) / (dtm / 1000);
+      lastMoveX = e.clientX; lastMoveT = now;
     });
     window.addEventListener("pointerup", function () {
       if (!dragging) return;
       dragging = false;
       stage.classList.remove("dragging");
-      var steps = Math.round(-moved * 0.35 / (360 / n));
-      goTo(current + steps);
-      restartAuto();
+      vel += Math.max(-600, Math.min(600, flingVel));   // lanjutkan sesuai lemparan
     });
 
     // klik foto -> lightbox (abaikan jika barusan drag)

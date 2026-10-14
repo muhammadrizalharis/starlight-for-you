@@ -561,10 +561,11 @@ main { position: relative; z-index: 2; }
   position: absolute;
   inset: 0;
   transform-style: preserve-3d;
-  transition: transform 0.7s cubic-bezier(0.2, 0.8, 0.2, 1);
+  transition: none;
+  will-change: transform;
   cursor: grab;
 }
-.carousel-stage.dragging { transition: none; cursor: grabbing; }
+.carousel-stage.dragging { cursor: grabbing; }
 .c-item {
   position: absolute;
   top: 50%;
