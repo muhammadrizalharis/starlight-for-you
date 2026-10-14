@@ -620,6 +620,61 @@
   }
 
   /* =============================================================
+     12. ORIENTASI — usahakan landscape otomatis + penunjuk putar
+     ============================================================= */
+  (function orientation() {
+    var isTouch = window.matchMedia("(pointer: coarse)").matches;
+    if (!isTouch) return;
+
+    function isPortrait() {
+      if (window.matchMedia) return window.matchMedia("(orientation: portrait)").matches;
+      return window.innerHeight > window.innerWidth;
+    }
+    function updateHint() {
+      document.body.classList.toggle("show-rotate-hint", isPortrait());
+    }
+
+    // Coba kunci ke landscape (berhasil di sebagian tablet/ponsel Android,
+    // umumnya butuh mode layar penuh; diabaikan diam-diam bila gagal).
+    function tryLock() {
+      try {
+        if (screen.orientation && screen.orientation.lock) {
+          var p = screen.orientation.lock("landscape");
+          if (p && p.catch) p.catch(function () {});
+        }
+      } catch (e) {}
+    }
+    function enterImmersive() {
+      var el = document.documentElement;
+      var rfs = el.requestFullscreen || el.webkitRequestFullscreen || el.msRequestFullscreen;
+      if (rfs) {
+        try {
+          var r = rfs.call(el);
+          if (r && r.then) r.then(tryLock).catch(function () { tryLock(); });
+          else tryLock();
+        } catch (e) { tryLock(); }
+      } else { tryLock(); }
+    }
+
+    // Saat interaksi pertama di layar potret, masuk mode immersive + kunci landscape
+    var lockedOnce = false;
+    function lockOnGesture() {
+      if (lockedOnce) return;
+      lockedOnce = true;
+      if (isPortrait()) enterImmersive(); else tryLock();
+      window.removeEventListener("pointerdown", lockOnGesture);
+    }
+    window.addEventListener("pointerdown", lockOnGesture, { passive: true });
+
+    updateHint();
+    window.addEventListener("resize", updateHint);
+    window.addEventListener("orientationchange", updateHint);
+    if (screen.orientation && screen.orientation.addEventListener) {
+      screen.orientation.addEventListener("change", updateHint);
+    }
+  })();
+
+  /* =============================================================
      Mulai galaxy
      ============================================================= */
   if (document.readyState === "loading") {

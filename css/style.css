@@ -677,3 +677,44 @@ main { position: relative; z-index: 2; }
   .carousel { height: 340px; }
   .c-item { width: 180px; height: 240px; margin: -120px 0 0 -90px; }
 }
+
+/* ============================================================
+   PENUNJUK PUTAR KE LANDSCAPE
+   Muncul hanya di perangkat sentuh saat orientasi potret.
+   ============================================================ */
+.rotate-hint {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  background: radial-gradient(ellipse at center, #0b1026 0%, #05060f 80%);
+  color: var(--text);
+  padding: 32px;
+}
+.rotate-hint-inner { max-width: 420px; }
+.rotate-phone {
+  font-size: 68px;
+  display: inline-block;
+  animation: rotateNudge 2.2s ease-in-out infinite;
+  filter: drop-shadow(0 0 20px rgba(255, 143, 184, 0.6));
+}
+@keyframes rotateNudge {
+  0%, 40%   { transform: rotate(0deg); }
+  60%, 100% { transform: rotate(90deg); }
+}
+.rotate-title {
+  font-family: "Cormorant Garamond", serif;
+  font-size: 1.8rem;
+  margin: 18px 0 8px;
+  color: #fff3f8;
+}
+.rotate-sub { color: var(--text-dim); font-weight: 300; }
+.rotate-sub b { color: var(--accent-strong); }
+
+/* Tampilkan hanya di layar sentuh orientasi potret */
+@media (orientation: portrait) and (pointer: coarse) {
+  body.show-rotate-hint .rotate-hint { display: flex; }
+}
