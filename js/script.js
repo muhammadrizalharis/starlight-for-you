@@ -15,15 +15,21 @@
   var smallScreen = window.innerWidth < 768;
   var lowEnd = coarse || smallScreen || cores <= 4 || mem <= 4;
 
-  // TIER: 0 = minim (reduce motion), 1 = ringan (HP), 2 = penuh (desktop kuat)
-  var TIER = reduceMotion ? 0 : (lowEnd ? 1 : 2);
+  // TIER: 1 = ringan (HP), 2 = penuh (desktop kuat).
+  // Catatan: situs ini memang bertujuan penuh animasi, jadi "reduce motion"
+  // TIDAK mematikan animasi — hanya dipakai untuk perilaku scroll & sedikit
+  // menurunkan intensitas lewat pemilihan tier perangkat.
+  var TIER = lowEnd ? 1 : 2;
 
   var cfg = {
-    galaxyCount: TIER === 2 ? 14000 : TIER === 1 ? 5000 : 2500,
+    galaxyCount: TIER === 2 ? 14000 : 5000,
     pixelRatioCap: TIER === 2 ? 2 : 1.5,
-    petalEvery: TIER === 2 ? 650 : 1400,
-    petalMax: TIER === 2 ? 32 : 12,
+    petalEvery: TIER === 2 ? 420 : 1100,
+    petalMax: TIER === 2 ? 46 : 16,
+    roseEvery: TIER === 2 ? 900 : 1900,
+    roseMax: TIER === 2 ? 18 : 7,
     shootEvery: TIER === 2 ? 3200 : 6500,
+    fireworkEvery: TIER === 2 ? 2600 : 5200,
     floaterCount: TIER === 2 ? 26 : 14,
     trail: TIER === 2,
     tilt: TIER === 2
@@ -244,6 +250,120 @@
     setTimeout(scheduleShoot, cfg.shootEvery + Math.random() * 2500);
   }
   if (TIER !== 0) setTimeout(scheduleShoot, 2000);
+
+  /* =============================================================
+     3b. HUJAN MAWAR (mawar besar berjatuhan lembut)
+     ============================================================= */
+  var roseLayer = $("#roseLayer");
+  var roseGlyphs = ["🌹", "🌹", "🌹", "🥀", "🌷"];
+  var roseCount = 0;
+  function spawnRose() {
+    if (!roseLayer || document.hidden) return;
+    if (roseCount >= cfg.roseMax) return;
+    var el = document.createElement("span");
+    el.className = "rose";
+    el.textContent = roseGlyphs[Math.floor(Math.random() * roseGlyphs.length)];
+    el.style.left = Math.random() * 100 + "vw";
+    el.style.fontSize = (Math.random() * 20 + 22) + "px";
+    el.style.setProperty("--drift", (Math.random() * 220 - 110) + "px");
+    el.style.setProperty("--spin", (Math.random() * 540 - 270) + "deg");
+    var dur = Math.random() * 6 + 9;
+    el.style.animationDuration = dur + "s";
+    roseLayer.appendChild(el);
+    roseCount++;
+    setTimeout(function () { el.remove(); roseCount--; }, dur * 1000);
+  }
+  if (roseLayer) { setInterval(spawnRose, cfg.roseEvery); setTimeout(spawnRose, 600); }
+
+  /* =============================================================
+     3c. KEMBANG API / PETASAN (canvas ledakan warna-warni)
+     ============================================================= */
+  (function fireworks() {
+    var cv = $("#fireworks");
+    if (!cv) return;
+    var ctx = cv.getContext("2d");
+    var W, H, dpr = Math.min(window.devicePixelRatio || 1, cfg.pixelRatioCap);
+    function resize() {
+      W = cv.width = Math.floor(window.innerWidth * dpr);
+      H = cv.height = Math.floor(window.innerHeight * dpr);
+      cv.style.width = window.innerWidth + "px";
+      cv.style.height = window.innerHeight + "px";
+    }
+    resize();
+    window.addEventListener("resize", resize);
+
+    var palettes = [
+      ["#ff8ac0", "#ff5fa2", "#ffd1e8"],
+      ["#b79bff", "#8a7bff", "#e4dbff"],
+      ["#ffd97a", "#ffb347", "#fff2cf"],
+      ["#7be0ff", "#58c8ff", "#d6f4ff"],
+      ["#9affd0", "#54e3a8", "#dcfff0"]
+    ];
+    var particles = [];
+    var running = true;
+
+    function burst(x, y) {
+      var pal = palettes[Math.floor(Math.random() * palettes.length)];
+      var count = (TIER === 2 ? 46 : 26) + Math.floor(Math.random() * 18);
+      var power = (TIER === 2 ? 5.2 : 4.2) + Math.random() * 2.2;
+      for (var i = 0; i < count; i++) {
+        var ang = (Math.PI * 2 * i) / count + Math.random() * 0.25;
+        var sp = power * (0.55 + Math.random() * 0.6);
+        particles.push({
+          x: x, y: y,
+          vx: Math.cos(ang) * sp,
+          vy: Math.sin(ang) * sp,
+          life: 1,
+          decay: 0.008 + Math.random() * 0.012,
+          size: (1.4 + Math.random() * 1.8) * dpr,
+          color: pal[Math.floor(Math.random() * pal.length)]
+        });
+      }
+    }
+
+    function launch() {
+      if (!running) return;
+      if (!document.hidden) {
+        var x = W * (0.15 + Math.random() * 0.7);
+        var y = H * (0.14 + Math.random() * 0.4);
+        burst(x, y);
+        if (Math.random() < 0.4) setTimeout(function () { burst(W * (0.2 + Math.random() * 0.6), H * (0.2 + Math.random() * 0.35)); }, 320);
+      }
+      setTimeout(launch, cfg.fireworkEvery + Math.random() * 2200);
+    }
+
+    function draw() {
+      if (!running) return;
+      ctx.globalCompositeOperation = "source-over";
+      ctx.fillStyle = "rgba(6, 4, 20, 0.22)";
+      ctx.fillRect(0, 0, W, H);
+      ctx.globalCompositeOperation = "lighter";
+      for (var i = particles.length - 1; i >= 0; i--) {
+        var p = particles[i];
+        p.vx *= 0.985;
+        p.vy = p.vy * 0.985 + 0.045 * dpr;
+        p.x += p.vx * dpr;
+        p.y += p.vy * dpr;
+        p.life -= p.decay;
+        if (p.life <= 0) { particles.splice(i, 1); continue; }
+        ctx.globalAlpha = Math.max(p.life, 0);
+        ctx.fillStyle = p.color;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size * p.life, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      ctx.globalAlpha = 1;
+      requestAnimationFrame(draw);
+    }
+
+    document.addEventListener("visibilitychange", function () {
+      running = !document.hidden;
+      if (running) { draw(); launch(); }
+    });
+
+    setTimeout(launch, 1200);
+    draw();
+  })();
 
   /* =============================================================
      4. JEJAK KURSOR berkilau (desktop kuat saja)

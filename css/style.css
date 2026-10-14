@@ -401,11 +401,6 @@ main { position: relative; z-index: 2; }
   .section { padding: 90px 18px; }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .reveal { transition: none; opacity: 1; transform: none; }
-  .heart, .akhir-heart, .scroll-cue .arrow, .music-toggle.playing .music-icon { animation: none; }
-}
-
 /* ===== 3D depth & tilt ===== */
 .gallery-grid,
 .reasons-grid,
@@ -463,7 +458,34 @@ main { position: relative; z-index: 2; }
 }
 .petals-layer { z-index: 1; }
 .shooting-layer { z-index: 1; }
+.rose-layer { position: fixed; inset: 0; pointer-events: none; overflow: hidden; z-index: 2; }
 .trail-layer { z-index: 5; }
+
+/* ----- Fireworks / petasan canvas ----- */
+#fireworks {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 2;
+  pointer-events: none;
+  mix-blend-mode: screen;
+}
+
+/* ----- Rose rain (mawar berjatuhan) ----- */
+.rose {
+  position: absolute;
+  top: -60px;
+  will-change: transform, opacity;
+  animation: roseFall linear forwards;
+  filter: drop-shadow(0 6px 10px rgba(0, 0, 0, 0.35));
+}
+@keyframes roseFall {
+  0%   { transform: translateY(-60px) translateX(0) rotate(0deg); opacity: 0; }
+  10%  { opacity: 1; }
+  90%  { opacity: 1; }
+  100% { transform: translateY(112vh) translateX(var(--drift, 80px)) rotate(var(--spin, 360deg)); opacity: 0.9; }
+}
 
 .petal {
   position: absolute;
@@ -634,9 +656,4 @@ main { position: relative; z-index: 2; }
 @media (max-width: 640px) {
   .carousel { height: 340px; }
   .c-item { width: 180px; height: 240px; margin: -120px 0 0 -90px; }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .nebula, .petal, .shoot, .spark { animation: none; }
-  .carousel-stage { transition: none; }
 }
