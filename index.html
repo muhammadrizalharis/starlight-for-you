@@ -11,11 +11,23 @@
   <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
-  <!-- Starfield canvas -->
+  <!-- Starfield / galaxy canvas -->
   <canvas id="starfield"></canvas>
 
-  <!-- Floating hearts layer -->
+  <!-- Nebula glow overlay -->
+  <div class="nebula" aria-hidden="true"></div>
+
+  <!-- Floating stars layer -->
   <div class="hearts-layer" id="heartsLayer" aria-hidden="true"></div>
+
+  <!-- Flying flowers / rose petals layer -->
+  <div class="petals-layer" id="petalsLayer" aria-hidden="true"></div>
+
+  <!-- Shooting stars layer -->
+  <div class="shooting-layer" id="shootingLayer" aria-hidden="true"></div>
+
+  <!-- Cursor sparkle trail layer -->
+  <div class="trail-layer" id="trailLayer" aria-hidden="true"></div>
 
   <!-- Music control -->
   <button id="musicToggle" class="music-toggle" aria-label="Putar musik" title="Putar / jeda musik">
@@ -123,31 +135,38 @@
       <div class="container">
         <h2 class="section-title reveal">Galeri Kenangan</h2>
         <p class="section-subtitle reveal">Potongan-potongan kecil kebahagiaan kita. 🌙</p>
-        <div class="gallery-grid">
-          <figure class="gallery-item reveal">
-            <img src="assets/photos/foto1.jpeg" alt="Salsa 1" loading="lazy" />
-            <figcaption>Apa adanya kamu</figcaption>
-          </figure>
-          <figure class="gallery-item reveal">
-            <img src="assets/photos/foto2.jpeg" alt="Salsa 2" loading="lazy" />
-            <figcaption>Gaya khasmu</figcaption>
-          </figure>
-          <figure class="gallery-item reveal">
-            <img src="assets/photos/foto3.jpeg" alt="Salsa 3" loading="lazy" />
-            <figcaption>Selalu ceria</figcaption>
-          </figure>
-          <figure class="gallery-item reveal">
-            <img src="assets/photos/foto4.jpeg" alt="Salsa 4" loading="lazy" />
-            <figcaption>Teman cerita</figcaption>
-          </figure>
-          <figure class="gallery-item reveal">
-            <img src="assets/photos/foto5.jpeg" alt="Salsa 5" loading="lazy" />
-            <figcaption>Momen hangat</figcaption>
-          </figure>
-          <figure class="gallery-item reveal">
-            <img src="assets/photos/foto6.jpeg" alt="Salsa 6" loading="lazy" />
-            <figcaption>Sahabat terbaik</figcaption>
-          </figure>
+        <div class="carousel reveal" id="carousel">
+          <div class="carousel-stage" id="carouselStage">
+            <figure class="c-item" data-cap="Apa adanya kamu">
+              <img src="assets/photos/foto1.jpeg" alt="Salsa 1" loading="lazy" />
+              <figcaption>Apa adanya kamu</figcaption>
+            </figure>
+            <figure class="c-item" data-cap="Gaya khasmu">
+              <img src="assets/photos/foto2.jpeg" alt="Salsa 2" loading="lazy" />
+              <figcaption>Gaya khasmu</figcaption>
+            </figure>
+            <figure class="c-item" data-cap="Selalu ceria">
+              <img src="assets/photos/foto3.jpeg" alt="Salsa 3" loading="lazy" />
+              <figcaption>Selalu ceria</figcaption>
+            </figure>
+            <figure class="c-item" data-cap="Teman cerita">
+              <img src="assets/photos/foto4.jpeg" alt="Salsa 4" loading="lazy" />
+              <figcaption>Teman cerita</figcaption>
+            </figure>
+            <figure class="c-item" data-cap="Momen hangat">
+              <img src="assets/photos/foto5.jpeg" alt="Salsa 5" loading="lazy" />
+              <figcaption>Momen hangat</figcaption>
+            </figure>
+            <figure class="c-item" data-cap="Sahabat terbaik">
+              <img src="assets/photos/foto6.jpeg" alt="Salsa 6" loading="lazy" />
+              <figcaption>Sahabat terbaik</figcaption>
+            </figure>
+          </div>
+        </div>
+        <div class="carousel-controls reveal">
+          <button class="c-btn" id="cPrev" aria-label="Foto sebelumnya">‹</button>
+          <span class="c-hint">putar · seret · klik untuk perbesar</span>
+          <button class="c-btn" id="cNext" aria-label="Foto berikutnya">›</button>
         </div>
       </div>
     </section>
@@ -178,6 +197,15 @@
       </div>
     </section>
   </main>
+
+  <!-- Lightbox -->
+  <div class="lightbox" id="lightbox" aria-hidden="true">
+    <button class="lb-close" id="lbClose" aria-label="Tutup">×</button>
+    <figure class="lb-figure">
+      <img id="lbImg" src="" alt="Foto Salsa" />
+      <figcaption id="lbCap"></figcaption>
+    </figure>
+  </div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <script src="js/script.js"></script>

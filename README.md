@@ -1,17 +1,18 @@
 # ✨ Starlight — untuk Salsabila Adistya Wati
 
-Sebuah web romantis penuh animasi bertema **bintang & galaxy**, dibuat dengan HTML, CSS, dan JavaScript murni (tanpa framework, tanpa proses build). Siap langsung di-deploy ke **GitHub Pages**.
+Sebuah web persembahan untuk sahabat, penuh animasi bertema **bintang & galaxy**, dibuat dengan HTML, CSS, dan JavaScript murni (tanpa framework, tanpa proses build). Siap langsung di-deploy ke **GitHub Pages**.
 
 ## 🌌 Fitur
 
-- **Hero** dengan **galaksi 3D** (Three.js): ribuan partikel spiral berputar, inti bercahaya, parallax mengikuti gerak mouse & scroll.
-- **Surat cinta** dengan desain kartu elegan.
-- **Timeline** perjalanan hubungan.
-- **Galeri** kenangan (tinggal ganti foto).
-- **Alasan menyayangi** dalam bentuk kartu.
+- **Hero** dengan **galaksi 3D** (Three.js): ribuan partikel spiral rose→ungu berputar, inti bercahaya, parallax mengikuti gerak mouse & scroll.
+- **Surat** untuk sahabat dengan desain kartu elegan.
+- **Timeline** perjalanan persahabatan.
+- **Galeri 3D carousel**: foto berputar melingkar (coverflow), bisa diputar otomatis, **diseret/di-swipe**, tombol ‹ ›, dan **klik foto untuk memperbesar (lightbox)**.
+- **Alasan bersyukur punya sahabat** dalam bentuk kartu.
 - **Musik latar** yang bisa dinyalakan/dimatikan.
-- Efek **tilt 3D** pada kartu & foto (mengikuti kursor), **elemen mengambang** berkedalaman, animasi **bintang melayang**, **reveal saat scroll**, dan **navigasi titik**.
-- Responsif (HP & desktop) serta menghormati `prefers-reduced-motion`.
+- Efek romantis: **nebula glow**, **kelopak bunga & mawar berterbangan**, **bintang jatuh**, **jejak kilau kursor** (desktop), efek **tilt 3D** pada kartu, **bintang melayang**, **reveal saat scroll**, dan **navigasi titik**.
+- **Hemat performa (HP kentang aman)**: deteksi otomatis 3 tingkat perangkat — jumlah partikel, pixel ratio, kelopak, dan efek dikurangi di HP/perangkat low-end; animasi berat dimatikan saat tab tidak aktif dan saat `prefers-reduced-motion`.
+- Responsif untuk HP & desktop.
 
 ## 📁 Struktur
 
