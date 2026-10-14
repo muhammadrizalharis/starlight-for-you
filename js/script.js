@@ -35,7 +35,7 @@
   /* =============================================================
      1. GALAXY 3D (Three.js) dengan fallback 2D
      ============================================================= */
-  var galaxyCanvas = $("#galaxy");
+  var galaxyCanvas = $("#starfield");
   var hasWebGL = (function () {
     try {
       var c = document.createElement("canvas");
@@ -406,10 +406,14 @@
      ============================================================= */
   var dots = $$(".dot");
   var sections = $$("section[id]");
+  function dotTarget(d) {
+    var href = d.getAttribute("href") || "";
+    return href.charAt(0) === "#" ? href.slice(1) : d.getAttribute("data-target");
+  }
   dots.forEach(function (d) {
-    d.addEventListener("click", function () {
-      var t = document.getElementById(d.getAttribute("data-target"));
-      if (t) t.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth" });
+    d.addEventListener("click", function (e) {
+      var t = document.getElementById(dotTarget(d));
+      if (t) { e.preventDefault(); t.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth" }); }
     });
   });
   if ("IntersectionObserver" in window && sections.length) {
@@ -417,7 +421,7 @@
       entries.forEach(function (en) {
         if (en.isIntersecting) {
           var id = en.target.id;
-          dots.forEach(function (d) { d.classList.toggle("active", d.getAttribute("data-target") === id); });
+          dots.forEach(function (d) { d.classList.toggle("active", dotTarget(d) === id); });
         }
       });
     }, { threshold: 0.5 });
